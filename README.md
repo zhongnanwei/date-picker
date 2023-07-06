@@ -1,4 +1,8 @@
-# datePicker
+# date-picker 组件
+
+该项目为一个具有多选日期的datePicker组件，可供大家参考使用效果如下：
+
+![1688635069478](src\assets\image\Snipaste_2023-07-06_17-18-37.png)
 
 This template should help get you started developing with Vue 3 in Vite.
 
