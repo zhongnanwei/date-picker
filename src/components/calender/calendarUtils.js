@@ -6,7 +6,6 @@
  */
 function getFirstWeekDay(year, month) {
     const data = new Date(year, month - 1, 1)
-    console.log('data', data.getDay());
     return data.getDay()
 }
 

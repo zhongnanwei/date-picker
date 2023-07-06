@@ -1,7 +1,15 @@
 <template>
     <div class="date-picker">
-        <input class="date-picker-input" placeholder="请选择时间" :value="selectDate" readonly @click.stop="showDatePick" />
-        <div v-show="state.visible" class="date-picker-wrapper" @click.stop="showDatePick">
+        <div class="date-picker-input" @mouseenter="showDatePickClean" @mouseleave="state.showCleanButton = false">
+            <input
+                class="wrapper-full"
+                placeholder="请选择时间"
+                :value="selectDate"
+                readonly
+                @click.stop="showDatePick" />
+            <button v-show="state.showCleanButton" class="date-picker-clean" @click.stop="cleanDateList">X</button>
+        </div>
+        <div v-show="state.visible" class="date-picker-wrapper" @click.stop>
             <header>
                 <div @click="changeYear('pre')" class="left">&lt;&lt;</div>
                 <div @click="changeMonth('pre')" class="left">&lt;</div>
@@ -69,6 +77,7 @@ import {
 
 const state = reactive({
     visible: false,
+    showCleanButton: false,
     pre: [],
     next: [],
     cur: [],
@@ -104,6 +113,10 @@ const selectDate = computed(() => {
     return list.join(",");
 });
 
+const cleanDateList = () => {
+    state.currentDateList = [];
+};
+
 const changeMonth = (type) => {
     switch (type) {
         case "pre":
@@ -137,7 +150,7 @@ const init = () => {
     state.next = getNextMonthRestDay(year, month);
     state.today = getToday(year, month, today);
 };
-
+//设置当前选中时间
 const setCurrent = (date, type) => {
     if (type) changeMonth(type);
     state.day = date;
@@ -148,6 +161,11 @@ const setCurrent = (date, type) => {
         state.currentDateList.push(getFormatDate(year, month, day));
     }
     init();
+};
+//
+
+const showDatePickClean = () => {
+    if (state.currentDateList.length) state.showCleanButton = true;
 };
 
 const getMoment = () => {
@@ -178,15 +196,24 @@ onMounted(() => {
         font-variant: tabular-nums;
         line-height: 1.5715;
         font-feature-settings: "tnum";
-        padding: 4px 11px;
         display: inline-flex;
         align-items: center;
         background: #fff;
         border: 1px solid #d9d9d9;
         border-radius: 2px;
         transition: border 0.3s, box-shadow 0.3s;
-        min-width: 180px;
+        min-width: 240px;
         height: 40px;
+    }
+    &-clean {
+        width: 18px;
+        height: 18px;
+        font-size: 12px;
+        text-align: center;
+        border-radius: 50%;
+        border: 0;
+        color: #fff;
+        background: #ccc;
     }
     &-wrapper {
         width: 358px;
@@ -347,5 +374,9 @@ onMounted(() => {
             text-align: center;
         }
     }
+}
+.wrapper-full {
+    width: 100%;
+    height: 100%;
 }
 </style>
