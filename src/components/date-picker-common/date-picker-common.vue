@@ -4,10 +4,12 @@
             <input
                 class="wrapper-full"
                 placeholder="请选择时间"
-                :value="selectDate"
+                :value="state.currentDate"
                 readonly
                 @click.stop="showDatePick" />
-            <button v-show="state.showCleanButton" class="date-picker-clean" @click.stop="cleanDateList">X</button>
+            <button v-show="state.showCleanButton" class="date-picker-clean" @click.stop="state.currentDate = ''">
+                X
+            </button>
         </div>
         <div v-show="state.visible" class="date-picker-wrapper" @click.stop>
             <header>
@@ -84,7 +86,7 @@ const state = reactive({
     year: new Date().getFullYear(),
     month: new Date().getMonth() + 1,
     day: new Date().getDate(),
-    currentDateList: [],
+    currentDate: "",
     today: new Date().getDate(),
 });
 
@@ -103,19 +105,6 @@ const currentTime = computed(() => {
     const [year, month, day] = getDateInfo(today);
     return getFormatDate(year, month, day);
 });
-
-const selectDate = computed(() => {
-    const list = state.currentDateList.sort((pre, cur) => {
-        const preStr = pre.split("-").join("");
-        const curStr = cur.split("-").join("");
-        return preStr - curStr;
-    });
-    return list.join(",");
-});
-
-const cleanDateList = () => {
-    state.currentDateList = [];
-};
 
 const changeMonth = (type) => {
     switch (type) {
@@ -140,7 +129,7 @@ const changeYear = (type) => {
 //是否为已选择日期
 const isSelectDate = (day) => {
     const { year, month } = state;
-    return state.currentDateList.includes(getFormatDate(year, month, day));
+    return state.currentDate === getFormatDate(year, month, day);
 };
 //日历日期初始化
 const init = () => {
@@ -155,23 +144,17 @@ const setCurrent = (date, type) => {
     if (type) changeMonth(type);
     state.day = date;
     const { year, month, day } = state;
-    if (state.currentDateList.includes(getFormatDate(year, month, day))) {
-        state.currentDateList = state.currentDateList.filter((item) => item !== getFormatDate(year, month, day));
-    } else {
-        state.currentDateList.push(getFormatDate(year, month, day));
-    }
+    state.currentDate = getFormatDate(year, month, day);
     init();
 };
 //
 
 const showDatePickClean = () => {
-    if (state.currentDateList.length) state.showCleanButton = true;
+    if (state.currentDate) state.showCleanButton = true;
 };
 
 const getMoment = () => {
-    if (!state.currentDateList.includes(currentTime.value)) {
-        state.currentDateList.push(currentTime.value);
-    }
+    state.currentDate = currentTime.value;
     state.year = Number(currentTime.value.split("-")[0]);
     state.month = Number(currentTime.value.split("-")[1]);
     init();
@@ -380,4 +363,3 @@ onMounted(() => {
     height: 100%;
 }
 </style>
-../calendarUtils.js
