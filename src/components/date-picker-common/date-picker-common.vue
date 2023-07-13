@@ -1,11 +1,7 @@
 <template>
     <div class="date-picker">
         <div class="date-picker-input" @mouseenter="showDatePickClean" @mouseleave="state.showCleanButton = false">
-            <input
-                class="wrapper-full"
-                placeholder="请选择时间"
-                :value="state.currentDate"
-                readonly
+            <input class="wrapper-full" :placeholder="placeholder" :value="state.currentDate" readonly
                 @click.stop="showDatePick" />
             <button v-show="state.showCleanButton" class="date-picker-clean" @click.stop="state.currentDate = ''">
                 X
@@ -31,30 +27,20 @@
                 <p class="label">日</p>
             </div>
             <div class="date-wrapper">
-                <div
-                    :class="['item', 'pre', index + 1 === state.pre.length ? 'end' : '']"
-                    v-for="(item, index) in state.pre"
-                    :key="'pre' + item"
-                    @click="setCurrent(item, 'pre')">
+                <div :class="['item', 'pre', index + 1 === state.pre.length ? 'end' : '']"
+                    v-for="(item, index) in state.pre" :key="'pre' + item" @click="setCurrent(item, 'pre')">
                     {{ item }}
                 </div>
 
-                <div
-                    :class="[
-                        'item',
-                        isSelectDate(item) ? 'current' : '',
-                        currentTime === getFormatDate(state.year, state.month, item) ? 'today' : '',
-                    ]"
-                    v-for="item in state.cur"
-                    :key="'cur' + item"
-                    @click="setCurrent(item)">
+                <div :class="[
+                    'item',
+                    isSelectDate(item) ? 'current' : '',
+                    currentTime === getFormatDate(state.year, state.month, item) ? 'today' : '',
+                ]" v-for="item in state.cur" :key="'cur' + item" @click="setCurrent(item)">
                     {{ item }}
                 </div>
 
-                <div
-                    :class="['item', 'next', !idx ? 'start' : '']"
-                    v-for="(item, idx) in state.next"
-                    :key="'next' + item"
+                <div :class="['item', 'next', !idx ? 'start' : '']" v-for="(item, idx) in state.next" :key="'next' + item"
                     @click="setCurrent(item, 'next')">
                     {{ item }}
                 </div>
@@ -66,7 +52,7 @@
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { reactive, onMounted, computed } from "vue";
 import {
     getLastMonthRestDays,
@@ -77,6 +63,9 @@ import {
     getToday,
 } from "../calendarUtils.js";
 
+const props = withDefaults(defineProps<{placeholder?:string}>(),{
+    placeholder: '请选择时间'
+})
 const state = reactive({
     visible: false,
     showCleanButton: false,
@@ -158,6 +147,7 @@ const getMoment = () => {
     state.year = Number(currentTime.value.split("-")[0]);
     state.month = Number(currentTime.value.split("-")[1]);
     init();
+    state.visible=false
 };
 
 onMounted(() => {
@@ -171,6 +161,7 @@ onMounted(() => {
 <style lang="scss" scoped>
 .date-picker {
     position: relative;
+
     &-input {
         box-sizing: border-box;
         margin: 0;
@@ -188,6 +179,7 @@ onMounted(() => {
         min-width: 240px;
         height: 40px;
     }
+
     &-clean {
         width: 18px;
         height: 18px;
@@ -198,6 +190,7 @@ onMounted(() => {
         color: #fff;
         background: #ccc;
     }
+
     &-wrapper {
         width: 358px;
         background-color: #fff;
@@ -224,14 +217,17 @@ onMounted(() => {
                 width: 140px;
             }
         }
+
         .label_box {
             display: flex;
+
             .label {
                 width: 50px;
                 text-align: center;
                 line-height: 50px;
             }
         }
+
         .date-wrapper {
             display: flex;
             width: 358px;
@@ -282,6 +278,7 @@ onMounted(() => {
             .start {
                 position: relative;
                 z-index: 999;
+
                 &::before {
                     content: "";
                     width: 40px;
@@ -294,6 +291,7 @@ onMounted(() => {
                     z-index: 0;
                 }
             }
+
             .end {
                 &::before {
                     content: "";
@@ -352,14 +350,11 @@ onMounted(() => {
                 }
             }
         }
+
         footer {
             padding: 10px 0;
             text-align: center;
         }
     }
-}
-.wrapper-full {
-    width: 100%;
-    height: 100%;
 }
 </style>

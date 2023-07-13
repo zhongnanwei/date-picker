@@ -1,3 +1,4 @@
+import dayjs from "dayjs"
 
 /***
  * 获取几月的 1号是星期几,
@@ -115,6 +116,9 @@ function getToday(year, month, day) {
     return date.getTime()
 }
 
+function beforeDisableDay(day){
+
+}
 
 
 export {
@@ -126,4 +130,5 @@ export {
     getFormatDate,
     getCurrentDayArr,
     getToday,
+    beforeDisableDay
 }
